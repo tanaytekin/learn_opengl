@@ -14,3 +14,6 @@ pub use self::shader::Shader;
 
 mod texture;
 pub use self::texture::Texture;
+
+pub mod camera;
+pub use camera::Camera;

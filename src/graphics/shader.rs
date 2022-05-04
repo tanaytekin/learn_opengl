@@ -1,4 +1,5 @@
 use gl::types::*;
+use glam::*;
 use std::error::Error;
 use std::ffi::{CStr, CString};
 use std::fs::read_to_string;
@@ -76,6 +77,14 @@ impl Shader {
 
     pub fn bind(&self) {
         unsafe { gl::UseProgram(self.program) };
+    }
+
+    pub fn set_mat4(&self, name: &str, mat: &Mat4) {
+        unsafe {
+            let c_str = CString::new(name).unwrap();
+            let location = gl::GetUniformLocation(self.program, c_str.as_ptr());
+            gl::UniformMatrix4fv(location, 1, gl::FALSE, &mat.to_cols_array()[0]);
+        }
     }
 }
 
