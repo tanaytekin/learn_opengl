@@ -9,6 +9,7 @@ pub struct Shader {
     program: GLuint,
 }
 
+#[allow(dead_code)]
 impl Shader {
     pub fn new(
         vertex_shader_src: &str,
@@ -33,7 +34,7 @@ impl Shader {
 
         Ok(Shader { program })
     }
-    pub fn new_from_paths(
+    pub fn from_paths(
         vertex_shader_path: &str,
         fragment_shader_path: &str,
     ) -> Result<Shader, Box<dyn Error>> {
@@ -75,15 +76,39 @@ impl Shader {
         Ok(shader)
     }
 
-    pub fn bind(&self) {
+    pub fn use_shader(&self) {
         unsafe { gl::UseProgram(self.program) };
     }
 
-    pub fn set_mat4(&self, name: &str, mat: &Mat4) {
+    pub fn set_mat4v(&self, name: &str, mat: &Mat4) {
         unsafe {
             let c_str = CString::new(name).unwrap();
             let location = gl::GetUniformLocation(self.program, c_str.as_ptr());
             gl::UniformMatrix4fv(location, 1, gl::FALSE, &mat.to_cols_array()[0]);
+        }
+    }
+
+    pub fn set_vec3v(&self, name: &str, v: &Vec3) {
+        unsafe {
+            let c_str = CString::new(name).unwrap();
+            let location = gl::GetUniformLocation(self.program, c_str.as_ptr());
+            gl::Uniform3fv(location, 1, &v[0]);
+        }
+    }
+
+    pub fn set_vec3(&self, name: &str, v0: f32, v1: f32, v2: f32) {
+        unsafe {
+            let c_str = CString::new(name).unwrap();
+            let location = gl::GetUniformLocation(self.program, c_str.as_ptr());
+            gl::Uniform3f(location, v0, v1, v2);
+        }
+    }
+
+    pub fn set_f32(&self, name: &str, v: f32) {
+        unsafe {
+            let c_str = CString::new(name).unwrap();
+            let location = gl::GetUniformLocation(self.program, c_str.as_ptr());
+            gl::Uniform1f(location, v);
         }
     }
 }

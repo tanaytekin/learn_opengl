@@ -2,11 +2,15 @@
 name = "learn_opengl"
 version = "0.1.0"
 edition = "2021"
+[features]
+fullscreen = []
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-glfw = "0.44.0"
+glfw = "0.41.0"
 gl = "0.14.0"
 image = "0.24.2"
 glam = "0.20.5"
+egui = "0.13.1"
+egui_glfw_gl = "0.13.1"

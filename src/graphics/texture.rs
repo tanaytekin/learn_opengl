@@ -3,6 +3,7 @@ use image::{io::Reader as ImageReader, ColorType};
 use std::error::Error;
 use std::ffi::c_void;
 
+#[allow(dead_code)]
 pub struct Texture {
     texture: GLuint,
     width: u32,
@@ -10,6 +11,7 @@ pub struct Texture {
     format: GLenum,
 }
 
+#[allow(dead_code)]
 impl Texture {
     pub fn from_path(path: &str) -> Result<Texture, Box<dyn Error>> {
         let img = ImageReader::open(path)?.decode()?;

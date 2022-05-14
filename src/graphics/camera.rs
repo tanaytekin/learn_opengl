@@ -9,12 +9,13 @@ pub enum Direction {
 
 #[derive(Default)]
 pub struct Camera {
-    position: Vec3,
+    pub position: Vec3,
     direction: Vec3,
     right: Vec3,
     yaw: f32,
     pitch: f32,
     pub view: Mat4,
+    locked: bool,
 }
 
 impl Camera {
@@ -27,6 +28,7 @@ impl Camera {
             position,
             yaw,
             pitch,
+            locked: false,
             ..Default::default()
         };
 
@@ -48,37 +50,45 @@ impl Camera {
     }
 
     pub fn process_keyboard(&mut self, direction: Direction, delta_time: f32) {
-        const SPEED: f32 = 10.0;
-        let speed = SPEED * delta_time;
-        match direction {
-            Direction::FORWARD => {
-                self.position += self.direction * speed;
-            }
-            Direction::BACKWARD => {
-                self.position -= self.direction * speed;
-            }
-            Direction::LEFT => {
-                self.position -= self.right * speed;
-            }
-            Direction::RIGHT => {
-                self.position += self.right * speed;
+        if !self.locked {
+            const SPEED: f32 = 5.0;
+            let speed = SPEED * delta_time;
+            match direction {
+                Direction::FORWARD => {
+                    self.position += self.direction * speed;
+                }
+                Direction::BACKWARD => {
+                    self.position -= self.direction * speed;
+                }
+                Direction::LEFT => {
+                    self.position -= self.right * speed;
+                }
+                Direction::RIGHT => {
+                    self.position += self.right * speed;
+                }
             }
         }
     }
 
     pub fn process_mouse(&mut self, x_offset: f32, y_offset: f32) {
-        const SENSITIVITY: f32 = 0.1;
+        if !self.locked {
+            const SENSITIVITY: f32 = 0.05;
 
-        let x_offset = x_offset * SENSITIVITY;
-        let y_offset = y_offset * SENSITIVITY;
+            let x_offset = x_offset * SENSITIVITY;
+            let y_offset = y_offset * SENSITIVITY;
 
-        self.yaw += x_offset;
-        self.pitch += y_offset;
+            self.yaw += x_offset;
+            self.pitch += y_offset;
 
-        if self.pitch < -89.9 {
-            self.pitch = -89.9;
-        } else if self.pitch > 89.9 {
-            self.pitch = 89.9;
+            if self.pitch < -89.9 {
+                self.pitch = -89.9;
+            } else if self.pitch > 89.9 {
+                self.pitch = 89.9;
+            }
         }
+    }
+
+    pub fn lock(&mut self, cond: bool) {
+        self.locked = cond;
     }
 }
