@@ -57,7 +57,7 @@ fn main() {
     window.set_mouse_button_polling(true);
     window.make_current();
 
-    //   glfw.set_swap_interval(glfw::SwapInterval::Sync(0));
+    glfw.set_swap_interval(glfw::SwapInterval::Sync(0));
 
     gl::load_with(|s| window.get_proc_address(s) as *const _);
 
@@ -85,29 +85,59 @@ fn main() {
     let light_cube_shader = Shader::from_paths("light_cube_vert.glsl", "light_cube_frag.glsl")
         .expect("Shader compile error");
 
+
     let vertices: Vec<f32> = vec![
-        -0.5, -0.5, -0.5, 0.0, 0.0, -1.0, 0.5, -0.5, -0.5, 0.0, 0.0, -1.0, 0.5, 0.5, -0.5, 0.0,
-        0.0, -1.0, 0.5, 0.5, -0.5, 0.0, 0.0, -1.0, -0.5, 0.5, -0.5, 0.0, 0.0, -1.0, -0.5, -0.5,
-        -0.5, 0.0, 0.0, -1.0, -0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 0.5,
-        0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, -0.5, 0.5, 0.5, 0.0, 0.0, 1.0, -0.5,
-        -0.5, 0.5, 0.0, 0.0, 1.0, -0.5, 0.5, 0.5, -1.0, 0.0, 0.0, -0.5, 0.5, -0.5, -1.0, 0.0, 0.0,
-        -0.5, -0.5, -0.5, -1.0, 0.0, 0.0, -0.5, -0.5, -0.5, -1.0, 0.0, 0.0, -0.5, -0.5, 0.5, -1.0,
-        0.0, 0.0, -0.5, 0.5, 0.5, -1.0, 0.0, 0.0, 0.5, 0.5, 0.5, 1.0, 0.0, 0.0, 0.5, 0.5, -0.5,
-        1.0, 0.0, 0.0, 0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 0.5, -0.5,
-        0.5, 1.0, 0.0, 0.0, 0.5, 0.5, 0.5, 1.0, 0.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0, 0.0, 0.5,
-        -0.5, -0.5, 0.0, -1.0, 0.0, 0.5, -0.5, 0.5, 0.0, -1.0, 0.0, 0.5, -0.5, 0.5, 0.0, -1.0, 0.0,
-        -0.5, -0.5, 0.5, 0.0, -1.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0, 0.0, -0.5, 0.5, -0.5, 0.0,
-        1.0, 0.0, 0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 0.5, 0.5, 0.5, 0.0, 1.0, 0.0, 0.5, 0.5, 0.5, 0.0,
-        1.0, 0.0, -0.5, 0.5, 0.5, 0.0, 1.0, 0.0, -0.5, 0.5, -0.5, 0.0, 1.0, 0.0,
+               // positions          // normals           // texture coords
+        -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,  0.0,  0.0,
+         0.5, -0.5, -0.5,  0.0,  0.0, -1.0,  1.0,  0.0,
+         0.5,  0.5, -0.5,  0.0,  0.0, -1.0,  1.0,  1.0,
+         0.5,  0.5, -0.5,  0.0,  0.0, -1.0,  1.0,  1.0,
+        -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,  0.0,  1.0,
+        -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,  0.0,  0.0,
+
+        -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,  0.0,  0.0,
+         0.5, -0.5,  0.5,  0.0,  0.0,  1.0,  1.0,  0.0,
+         0.5,  0.5,  0.5,  0.0,  0.0,  1.0,  1.0,  1.0,
+         0.5,  0.5,  0.5,  0.0,  0.0,  1.0,  1.0,  1.0,
+        -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,  0.0,  1.0,
+        -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,  0.0,  0.0,
+
+        -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,  1.0,  0.0,
+        -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,  1.0,  1.0,
+        -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,  0.0,  1.0,
+        -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,  0.0,  1.0,
+        -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,  0.0,  0.0,
+        -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,  1.0,  0.0,
+
+         0.5,  0.5,  0.5,  1.0,  0.0,  0.0,  1.0,  0.0,
+         0.5,  0.5, -0.5,  1.0,  0.0,  0.0,  1.0,  1.0,
+         0.5, -0.5, -0.5,  1.0,  0.0,  0.0,  0.0,  1.0,
+         0.5, -0.5, -0.5,  1.0,  0.0,  0.0,  0.0,  1.0,
+         0.5, -0.5,  0.5,  1.0,  0.0,  0.0,  0.0,  0.0,
+         0.5,  0.5,  0.5,  1.0,  0.0,  0.0,  1.0,  0.0,
+
+        -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,  0.0,  1.0,
+         0.5, -0.5, -0.5,  0.0, -1.0,  0.0,  1.0,  1.0,
+         0.5, -0.5,  0.5,  0.0, -1.0,  0.0,  1.0,  0.0,
+         0.5, -0.5,  0.5,  0.0, -1.0,  0.0,  1.0,  0.0,
+        -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,  0.0,  0.0,
+        -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,  0.0,  1.0,
+
+        -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,  0.0,  1.0,
+         0.5,  0.5, -0.5,  0.0,  1.0,  0.0,  1.0,  1.0,
+         0.5,  0.5,  0.5,  0.0,  1.0,  0.0,  1.0,  0.0,
+         0.5,  0.5,  0.5,  0.0,  1.0,  0.0,  1.0,  0.0,
+        -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,  0.0,  0.0,
+        -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,  0.0,  1.0
     ];
 
-    let mut cube_vao = 0;
+    //let mut cube_vao = 0;
     let mut light_cube_vao = 0;
     let mut vbo = 0;
 
     unsafe { gl::Enable(gl::DEPTH_TEST) };
     unsafe {
-        gl::GenVertexArrays(1, &mut cube_vao);
+        //gl::GenVertexArrays(1, &mut cube_vao);
         gl::GenBuffers(1, &mut vbo);
 
         gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
@@ -117,7 +147,7 @@ fn main() {
             vertices.as_ptr() as *const std::ffi::c_void,
             gl::STATIC_DRAW,
         );
-
+/*
         gl::BindVertexArray(cube_vao);
 
         gl::VertexAttribPointer(
@@ -125,7 +155,7 @@ fn main() {
             3,
             gl::FLOAT,
             gl::FALSE,
-            (6 * std::mem::size_of::<f32>()) as GLsizei,
+            (8 * std::mem::size_of::<f32>()) as GLsizei,
             (0 * std::mem::size_of::<f32>()) as *const GLvoid,
         );
         gl::EnableVertexAttribArray(0);
@@ -134,11 +164,22 @@ fn main() {
             3,
             gl::FLOAT,
             gl::FALSE,
-            (6 * std::mem::size_of::<f32>()) as GLsizei,
+            (8 * std::mem::size_of::<f32>()) as GLsizei,
             (3 * std::mem::size_of::<f32>()) as *const GLvoid,
         );
         gl::EnableVertexAttribArray(1);
 
+
+        gl::VertexAttribPointer(
+            2,
+            2,
+            gl::FLOAT,
+            gl::FALSE,
+            (8 * std::mem::size_of::<f32>()) as GLsizei,
+            (6 * std::mem::size_of::<f32>()) as *const GLvoid,
+        );
+        gl::EnableVertexAttribArray(2);
+*/
         gl::GenVertexArrays(1, &mut light_cube_vao);
         gl::BindVertexArray(light_cube_vao);
         gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
@@ -147,16 +188,18 @@ fn main() {
             3,
             gl::FLOAT,
             gl::FALSE,
-            (6 * std::mem::size_of::<f32>()) as GLsizei,
+            (8 * std::mem::size_of::<f32>()) as GLsizei,
             (0 * std::mem::size_of::<f32>()) as *const GLvoid,
         );
         gl::EnableVertexAttribArray(0);
     }
-
-    /*
-    let texture = Texture::from_path("container.jpg").expect("Texture create error");
-    texture.bind();
-    */
+/*
+    let diffuse_map = Texture::from_path("container2.png").unwrap();
+    let specular_map = Texture::from_path("container2_specular.png").unwrap();
+    lighting_shader.use_shader();
+    lighting_shader.set_i32("material.diffuse_tex", 0);
+    lighting_shader.set_i32("material.specular_tex", 1);
+ */
 
     let mut camera = Camera::new();
     let mut first_mouse = false;
@@ -175,11 +218,17 @@ fn main() {
     let mut light_diffuse = Vec3::new(0.5, 0.5, 0.5);
     let mut light_specular = Vec3::new(1.0, 1.0, 1.0);
 
-    let mut material_ambient = Vec3::new(1.0, 0.5, 0.31);
-    let mut material_diffuse = Vec3::new(1.0, 0.5, 0.31);
-    let mut material_specular = Vec3::new(0.5, 0.5, 0.5);
+    let mut material_ambient = Vec3::new(1.0, 1.0, 1.00);
+    let mut material_diffuse = Vec3::new(1.0, 1.0, 1.00);
+    let mut material_specular = Vec3::new(1.0, 1.0, 1.0);
 
     let mut material_shininess = 32.0;
+
+
+
+    let mut md = Model::new("backpack.obj").unwrap();
+
+
 
     while !window.should_close() {
         egui_input_state.input.time = Some(start_time.elapsed().as_secs_f64());
@@ -191,7 +240,7 @@ fn main() {
         let delta_time = cur_time - last_time;
         last_time = cur_time;
 
-        //println!("FPS: {}", 1.0 / delta_time);
+        println!("FPS: {}", 1.0 / delta_time);
 
         if window.get_key(glfw::Key::W) == glfw::Action::Press {
             camera.process_keyboard(camera::Direction::FORWARD, delta_time as f32);
@@ -208,7 +257,7 @@ fn main() {
         camera.update();
 
         unsafe {
-            gl::ClearColor(0.2, 0.3, 0.3, 1.0);
+            gl::ClearColor(0.1, 0.1, 0.1, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
 
@@ -220,11 +269,6 @@ fn main() {
         lighting_shader.set_vec3v("light.diffuse", &light_diffuse);
         lighting_shader.set_vec3v("light.specular", &light_specular);
 
-        lighting_shader.set_vec3v("material.ambient", &material_ambient);
-        lighting_shader.set_vec3v("material.diffuse", &material_diffuse);
-        lighting_shader.set_vec3v("material.specular", &material_specular);
-
-        lighting_shader.set_f32("material.shininess", material_shininess);
 
         let projection = Mat4::perspective_rh_gl(
             45.0_f32.to_radians(),
@@ -236,26 +280,48 @@ fn main() {
         let view = camera.view;
         let model = Mat4::from_translation(cube_pos);
 
+    /*
+        diffuse_map.bind(0);
+        specular_map.bind(1);
+        */
+
         lighting_shader.set_mat4v("projection", &projection);
         lighting_shader.set_mat4v("view", &view);
         lighting_shader.set_mat4v("model", &model);
+/*
         unsafe {
             gl::BindVertexArray(cube_vao);
             gl::DrawArrays(gl::TRIANGLES, 0, 36);
         }
+ */
 
         light_cube_shader.use_shader();
         light_cube_shader.set_mat4v("projection", &projection);
         light_cube_shader.set_mat4v("view", &view);
+        let mut light_color = (light_ambient + light_diffuse + light_specular)/3.0;
+        light_color.normalize();
+        light_cube_shader.set_vec3v("light_color", &light_color);
+
+
 
         //let mut model = Mat4::from_translation(Vec3::new(1.2, 1.0, 2.0));
         let mut model = Mat4::from_translation(light_pos);
-        model = model * Mat4::from_scale(Vec3::new(0.2, 0.2, 0.2));
+        model = model * Mat4::from_scale(Vec3::new(1.0, 1.0, 1.0));
         light_cube_shader.set_mat4v("model", &model);
+
         unsafe {
             gl::BindVertexArray(light_cube_vao);
             gl::DrawArrays(gl::TRIANGLES, 0, 36);
         }
+        /*
+        model_shader.use_shader();
+        model_shader.set_mat4v("projection", &projection);
+        model_shader.set_mat4v("view", &view);
+        model_shader.set_mat4v("model", &model);
+         */
+
+        md.draw(&lighting_shader);
+
         /*
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
@@ -270,7 +336,7 @@ fn main() {
         */
 
         egui::Window::new("Controls").show(&egui_ctx, |ui| {
-            ui.heading("Cube Position");
+            ui.heading("Model Position");
             ui.add(egui::Slider::new(&mut cube_pos.x, -10.0..=10.0).text("x"));
             ui.add(egui::Slider::new(&mut cube_pos.y, -10.0..=10.0).text("y"));
             ui.add(egui::Slider::new(&mut cube_pos.z, -10.0..=10.0).text("z"));
@@ -279,7 +345,7 @@ fn main() {
             ui.add(egui::Slider::new(&mut light_pos.x, -10.0..=10.0).text("x"));
             ui.add(egui::Slider::new(&mut light_pos.y, -10.0..=10.0).text("y"));
             ui.add(egui::Slider::new(&mut light_pos.z, -10.0..=10.0).text("z"));
-
+/*
             ui.heading("Material Color");
             ui.horizontal(|ui| {
                 ui.label("Ambient");
@@ -297,6 +363,7 @@ fn main() {
                 ui.label("Shininess");
                 ui.add(egui::Slider::new(&mut material_shininess, 0.0..=128.0));
             });
+            */
 
             ui.heading("Light Color");
             ui.horizontal(|ui| {

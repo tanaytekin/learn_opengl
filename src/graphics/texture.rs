@@ -15,6 +15,7 @@ pub struct Texture {
 impl Texture {
     pub fn from_path(path: &str) -> Result<Texture, Box<dyn Error>> {
         let img = ImageReader::open(path)?.decode()?;
+        eprintln!("texture create : {}", path);
 
         let width = img.width();
         let height = img.height();
@@ -62,8 +63,11 @@ impl Texture {
         })
     }
 
-    pub fn bind(&self) {
-        unsafe { gl::BindTexture(gl::TEXTURE_2D, self.texture) };
+    pub fn bind(&self, index: u32) {
+        unsafe {
+            gl::ActiveTexture(gl::TEXTURE0 + index);
+            gl::BindTexture(gl::TEXTURE_2D, self.texture)
+        };
     }
 }
 

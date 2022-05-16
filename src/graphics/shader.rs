@@ -111,6 +111,14 @@ impl Shader {
             gl::Uniform1f(location, v);
         }
     }
+
+    pub fn set_i32(&self, name: &str, v: i32) {
+        unsafe {
+            let c_str = CString::new(name).unwrap();
+            let location = gl::GetUniformLocation(self.program, c_str.as_ptr());
+            gl::Uniform1i(location, v);
+        }
+    }
 }
 
 impl Drop for Shader {
