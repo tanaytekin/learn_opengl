@@ -14,7 +14,7 @@ pub struct Texture {
 #[allow(dead_code)]
 impl Texture {
     pub fn from_path(path: &str) -> Result<Texture, Box<dyn Error>> {
-        let img = ImageReader::open(path)?.decode()?;
+        let img = ImageReader::open(path)?.decode()?.flipv();
         eprintln!("texture create : {}", path);
 
         let width = img.width();
